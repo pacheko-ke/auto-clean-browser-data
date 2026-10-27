@@ -17,7 +17,7 @@ const MAX_INTERVAL = 525600;
 const DEFAULTS = {
   enabled: false,
   notify: false,
-  intervalMinutes: 60,
+  intervalMinutes: 10,
   range: "all",
   exclusions: "",
   types: { history: true, cache: true },
