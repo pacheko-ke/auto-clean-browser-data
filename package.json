@@ -1,0 +1,12 @@
+{
+  "name": "auto-clean-extension",
+  "private": true,
+  "version": "1.2.1",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./popup.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./popup.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

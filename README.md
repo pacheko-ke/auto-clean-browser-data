@@ -59,8 +59,22 @@ All settings stay on your device. The extension collects no data, sends nothing 
 | `manifest.json` | Extension configuration (Manifest V3) |
 | `background.js` | Scheduling and cleaning logic |
 | `popup.html` / `popup.js` | Settings popup |
+| `popup.css` | Compiled Tailwind CSS used by the popup (generated, do not edit) |
+| `src/input.css`, `tailwind.config.js`, `package.json` | Tailwind source, used only for development |
 | `icons/` | Toolbar and store icons |
+
+## Development (changing the popup styles)
+
+The popup is styled with Tailwind CSS. Browser extensions can't load remote scripts, so the CSS is compiled ahead of time into `popup.css`.
+
+```
+npm install
+npm run build:css     # one-off build
+npm run watch:css     # rebuild on every change
+```
+
+Re-run the build whenever you change classes in `popup.html` or `popup.js`.
 
 ## Version
 
-1.1.0
+1.2.1

@@ -2,83 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Auto Clean Browsing Data</title>
-  <style>
-    :root {
-      --bg: #ffffff; --fg: #1f2937; --muted: #6b7280; --border: #e5e7eb;
-      --accent: #0f6cbd; --danger: #b91c1c; --ok: #15803d;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #1f1f1f; --fg: #f3f4f6; --muted: #9ca3af; --border: #3a3a3a; --accent: #4cc2ff; --danger: #f87171; --ok: #4ade80; }
-    }
-    * { box-sizing: border-box; }
-    body { width: 360px; margin: 0; padding: 14px; background: var(--bg); color: var(--fg);
-           font: 13px/1.4 "Segoe UI", system-ui, sans-serif; }
-    h1 { font-size: 15px; margin: 0 0 12px; }
-    h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 14px 0 6px; }
-    .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    label.check { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
-    .typeRow { display: flex; align-items: center; gap: 6px; }
-    .typeRow label.check { flex: 1; }
-    .unit { color: var(--muted); font-size: 11px; width: 24px; }
-    input[type=number], select, textarea { padding: 5px 6px; border: 1px solid var(--border);
-      border-radius: 4px; background: var(--bg); color: var(--fg); font: inherit; }
-    input[type=number] { width: 110px; }
-    input.tint { width: 64px; }
-    select { width: 130px; }
-    textarea { width: 100%; height: 56px; resize: vertical; }
-    .hint { color: var(--muted); font-size: 11px; margin: 2px 0 4px; }
-    .warn { color: var(--danger); font-size: 11px; margin: 0 0 2px 24px; }
-    .note { color: var(--muted); font-size: 11px; margin: 0 0 2px 24px; }
-    .buttons { display: flex; gap: 8px; margin-top: 14px; }
-    button { flex: 1; padding: 7px 10px; border-radius: 4px; border: 1px solid var(--accent);
-      font: inherit; cursor: pointer; }
-    button.primary { background: var(--accent); color: #fff; }
-    @media (prefers-color-scheme: dark) { button.primary { color: #000; } }
-    button.secondary { background: transparent; color: var(--accent); }
-    .status { margin-top: 12px; font-size: 12px; color: var(--muted); min-height: 32px; }
-    .status .ok { color: var(--ok); } .status .err { color: var(--danger); }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auto Clean</title>
+  <link rel="stylesheet" href="popup.css" />
 </head>
-<body>
-  <h1>Auto Clean Browsing Data</h1>
+<body class="w-[380px] bg-slate-50 font-sans text-[13px] text-slate-800 antialiased dark:bg-[#16181d] dark:text-slate-100">
 
-  <label class="check"><input type="checkbox" id="enabled" /> <strong>Enable automatic cleaning</strong></label>
-  <label class="check"><input type="checkbox" id="notify" /> Show a notification after each clean</label>
+  <header class="flex items-center justify-between px-4 pb-3 pt-4">
+    <div class="flex items-center gap-3">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-paypal to-paypal-dark shadow-lg shadow-paypal/30">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-[15px] font-semibold leading-tight">Auto Clean</h1>
+        <p id="stateText" class="text-xs text-slate-500 dark:text-slate-400">Automatic cleaning is off</p>
+      </div>
+    </div>
+    <label class="cursor-pointer" title="Enable automatic cleaning">
+      <input id="enabled" type="checkbox" class="sw-input" />
+      <span class="sw-track"></span>
+    </label>
+  </header>
 
-  <h2>Schedule</h2>
-  <div class="row">
-    <span>Default interval (minutes)</span>
-    <input type="number" id="interval" min="1" max="525600" step="1" />
-  </div>
-  <div class="row" style="margin-top:8px">
-    <span>Delete data from</span>
-    <select id="range">
-      <option value="all">All time</option>
-      <option value="hour">Last hour</option>
-      <option value="day">Last 24 hours</option>
-      <option value="week">Last 7 days</option>
-      <option value="month">Last 4 weeks</option>
-    </select>
-  </div>
+  <main class="space-y-3 px-4 pb-3">
 
-  <h2>What to delete</h2>
-  <div class="hint">Tick what to delete. The box on the right sets its own interval; leave it blank to use the default.</div>
-  <div style="font-size:12px;margin-bottom:4px">
-    <a href="#" id="selectAll">Select all</a> &nbsp;|&nbsp; <a href="#" id="selectNone">Select none</a>
-  </div>
-  <div id="types"></div>
+    <section class="card space-y-2.5">
+      <div class="section-title">Schedule</div>
+      <div class="flex items-center justify-between gap-3">
+        <span>Default interval</span>
+        <div class="flex items-center gap-2">
+          <input id="interval" type="number" min="1" max="525600" step="1" class="field w-20 text-right" />
+          <span class="text-xs text-slate-400">min</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <span>Delete data from</span>
+        <select id="range" class="field w-36">
+          <option value="all">All time</option>
+          <option value="hour">Last hour</option>
+          <option value="day">Last 24 hours</option>
+          <option value="week">Last 7 days</option>
+          <option value="month">Last 4 weeks</option>
+        </select>
+      </div>
+      <label class="flex cursor-pointer items-center gap-2.5 pt-0.5">
+        <input id="notify" type="checkbox" class="cb-input" />
+        <span class="cb-box"><svg class="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5" /></svg></span>
+        <span>Notify me after each clean</span>
+      </label>
+    </section>
 
-  <h2>Sites to keep</h2>
-  <textarea id="exclusions" placeholder="One site per line, e.g.&#10;mail.google.com&#10;mybank.co.ke" spellcheck="false"></textarea>
-  <div class="hint">Protects cookies, local storage, IndexedDB, service workers, cache storage, file system data and history for these sites (subdomains included for history; for the rest list each subdomain). Cache, download history, form data and passwords can't be scoped by site.</div>
+    <section class="card">
+      <div class="mb-1 flex items-center justify-between">
+        <div class="section-title">What to delete</div>
+        <div class="text-xs">
+          <a href="#" id="selectAll" class="link">All</a>
+          <span class="mx-1 text-slate-300 dark:text-slate-600">|</span>
+          <a href="#" id="selectNone" class="link">None</a>
+        </div>
+      </div>
+      <p class="mb-1.5 text-[11px] leading-snug text-slate-400">Tick what to delete. The box on the right gives a type its own interval; leave it blank to use the default.</p>
+      <div id="types" class="divide-y divide-slate-100 dark:divide-white/5"></div>
+    </section>
 
-  <div class="buttons">
-    <button class="primary" id="save">Save</button>
-    <button class="secondary" id="clean">Clean now</button>
-  </div>
+    <section class="card">
+      <div class="section-title mb-2">Sites to keep</div>
+      <textarea id="exclusions" spellcheck="false" rows="3" class="field h-auto w-full resize-y py-2" placeholder="One site per line, e.g.&#10;mail.google.com&#10;mybank.co.ke"></textarea>
+      <p class="mt-1.5 text-[11px] leading-snug text-slate-400">Protects cookies, storage, service workers and history for these sites. Cache, download history, form data and passwords can't be scoped by site.</p>
+    </section>
 
-  <div class="status" id="status"></div>
+  </main>
+
+  <footer class="sticky bottom-0 border-t border-slate-200 bg-slate-50/90 px-4 pb-4 pt-3 backdrop-blur dark:border-white/10 dark:bg-[#16181d]/90">
+    <div id="status" class="mb-2 min-h-[1rem] space-y-0.5 text-xs"></div>
+    <div class="flex gap-2">
+      <button id="save" class="btn btn-primary">Save</button>
+      <button id="clean" class="btn btn-ghost">Clean now</button>
+    </div>
+  </footer>
+
   <script src="popup.js"></script>
 </body>
 </html>

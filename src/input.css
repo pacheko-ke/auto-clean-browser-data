@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white p-3 shadow-sm
+           dark:border-white/10 dark:bg-white/5 dark:shadow-none;
+  }
+  .section-title {
+    @apply text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400;
+  }
+  .field {
+    @apply h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-[13px] text-slate-800
+           outline-none transition placeholder:text-slate-400
+           focus:border-paypal focus:ring-2 focus:ring-paypal/30
+           dark:border-white/10 dark:bg-white/5 dark:text-slate-100;
+  }
+  select.field { @apply pr-7; }
+
+  /* Checkbox */
+  .cb-input { @apply sr-only; }
+  .cb-box {
+    @apply flex h-4 w-4 shrink-0 items-center justify-center rounded border border-slate-300
+           bg-white text-white transition dark:border-white/25 dark:bg-white/5;
+  }
+  .cb-box svg { @apply opacity-0 transition; }
+  .cb-input:checked + .cb-box { @apply border-paypal bg-paypal; }
+  .cb-input:checked + .cb-box svg { @apply opacity-100; }
+  .cb-input:focus-visible + .cb-box { @apply ring-2 ring-paypal/40; }
+
+  /* Switch */
+  .sw-input { @apply sr-only; }
+  .sw-track {
+    @apply relative block h-5 w-9 rounded-full bg-slate-300 transition dark:bg-white/20;
+  }
+  .sw-track::after {
+    content: "";
+    @apply absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition;
+  }
+  .sw-input:checked + .sw-track { @apply bg-paypal; }
+  .sw-input:checked + .sw-track::after { @apply translate-x-4; }
+  .sw-input:focus-visible + .sw-track { @apply ring-2 ring-paypal/40; }
+
+  /* Buttons */
+  .btn {
+    @apply h-9 flex-1 rounded-lg text-[13px] font-medium transition active:scale-[.98];
+  }
+  .btn-primary {
+    @apply bg-gradient-to-br from-paypal to-paypal-dark text-white shadow-md shadow-paypal/25
+           hover:brightness-110;
+  }
+  .btn-ghost {
+    @apply border border-slate-300 bg-transparent text-slate-700 hover:bg-slate-100
+           dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10;
+  }
+  .link {
+    @apply text-paypal hover:underline dark:text-paypal-light;
+  }
+}

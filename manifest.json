@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Auto Clean Browsing Data",
-  "version": "1.1.1",
+  "version": "1.2.2",
   "description": "Automatically delete the browsing data you choose, every N minutes.",
   "permissions": ["browsingData", "alarms", "storage", "notifications", "history"],
   "background": {
